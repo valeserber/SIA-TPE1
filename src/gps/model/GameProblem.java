@@ -8,8 +8,6 @@ import gps.api.GPSState;
 
 public class GameProblem implements GPSProblem{
 
-	public static int SIZE = 8;
-	
 	@Override
 	public GPSState getInitState() {
 		int[][] board = {{0, 0, 0, 0, 1, 0, 0, 0}, 
