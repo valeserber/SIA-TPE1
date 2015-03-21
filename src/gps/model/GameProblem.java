@@ -1,10 +1,11 @@
 package gps.model;
 
-import java.util.List;
-
 import gps.api.GPSProblem;
 import gps.api.GPSRule;
 import gps.api.GPSState;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class GameProblem implements GPSProblem{
 
@@ -24,8 +25,15 @@ public class GameProblem implements GPSProblem{
 
 	@Override
 	public List<GPSRule> getRules() {
-		// TODO Auto-generated method stub
-		return null;
+		List<GPSRule> rules = new LinkedList<GPSRule>();
+		for(int c=1; c<3;c++){
+			for(int i=0; i< GameState.SIZE;i++){
+				for (int j=0; j<GameState.SIZE; j++){
+					rules.add(new GameRule(c,i,j));
+				}
+			}
+		}
+		return rules;
 	}
 
 	@Override
