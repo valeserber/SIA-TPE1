@@ -34,6 +34,8 @@ public class GameState implements GPSState {
 				this.board[i][j] = gameState.getBoard()[i][j];
 			}
 		}
+		this.red=gameState.red;
+		this.blue=gameState.blue;
 	}
 
 	public int getRedCount() {
@@ -42,6 +44,10 @@ public class GameState implements GPSState {
 
 	public int getBlueCount() {
 		return this.blue;
+	}
+	
+	public int getColoredCount(){
+		return this.blue+this.red;
 	}
 
 	public int getSize() {
@@ -86,6 +92,11 @@ public class GameState implements GPSState {
 	
 	public void addColor(int color, int row, int col) {
 		this.board[row][col] = color;
+		if(color==RED){
+			red++;
+		}else{
+			blue++;
+		}
 	}
 
 	public void printBoard(){

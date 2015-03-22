@@ -66,17 +66,17 @@ public class GameRule implements GPSRule {
 			GameRule r = getRedRulesForTile(row, i); // genero las
 														// reglas de la
 														// fila
-			int[][] newBoard = copyBoard(state.getBoard());
-			newBoard[row][col] = color; // nuevo tablero con mi regla
+			GameState newState = new GameState(state);
+			newState.addColor(color, row, col);// nuevo tablero con mi regla
 										// agregada
 			try {
-				r.isAppliable(new GameState(newBoard));
+				r.isAppliable(newState);
 			} catch (NotAppliableException e) { // si no puedo poner una
 												// regla
-				if (newBoard[r.row][r.col] == 0) {
+				if (newState.getBoard()[r.row][r.col] == 0) {
 					r = getPairRule(r);
 					try {
-						r.isAppliable(new GameState(newBoard));
+						r.isAppliable(newState);
 					} catch (NotAppliableException e2) { // ni el otro color
 															// en el mismo
 															// lugar
@@ -106,15 +106,15 @@ public class GameRule implements GPSRule {
 			throws NotAppliableException {
 		for (int i = 0; i < GameState.SIZE; i++) { // recorro la fila
 			GameRule r = getRedRulesForTile(i, col);
-			int[][] newBoard = copyBoard(state.getBoard());
-			newBoard[row][col] = color; // nuevo tablero con mi regla agregada
+			GameState newState = new GameState(state);
+			newState.addColor(color, row, col); // nuevo tablero con mi regla agregada
 			try {
-				r.isAppliable(new GameState(newBoard));
+				r.isAppliable(newState);
 			} catch (NotAppliableException e) { // si no puedo poner una regla
-				if (newBoard[r.row][r.col] == 0) {
+				if (newState.getBoard()[r.row][r.col] == 0) {
 					r = getPairRule(r);
 					try {
-						r.isAppliable(new GameState(newBoard));
+						r.isAppliable(newState);
 					} catch (NotAppliableException e2) { // ni el otro color en
 															// el mismo lugar
 						throw new NotAppliableException();

@@ -64,7 +64,7 @@ public abstract class GPSEngine {
 	}
 
 	private  boolean explode(GPSNode node) {
-		((GameState)node.getState()).printBoard();;
+		((GameState)node.getState()).printBoard();
 		if(problem.getRules() == null){
 			System.err.println("No rules!");
 			return false;
