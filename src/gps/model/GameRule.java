@@ -4,7 +4,13 @@ import gps.api.GPSRule;
 import gps.api.GPSState;
 import gps.exception.NotAppliableException;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class GameRule implements GPSRule {
+
+	// TODO 1: Falta la regla de que no haya dos columnas o filas IGUALES
+	// TODO 2: ¿Puedo encadenar blockRow con blockCol? Usar tests para probar
 
 	private int color;
 	private int row;
@@ -35,17 +41,91 @@ public class GameRule implements GPSRule {
 			throw new IllegalArgumentException();
 		}
 		GameState gameState = (GameState) state;
-		if (isOcuppied(gameState) || isColorFull(gameState) ||
-				hasThreeAdjacentTiles(gameState) || filledRowOrCol(gameState)){
-			throw new NotAppliableException();
-		}
+		isAppliable(gameState);
+		blockOtherTailInCol(gameState);
+		blockOtherTailInRow(gameState);
 		GameState updatedState = new GameState(gameState);
 		updatedState.addColor(color, row, col);
 		return updatedState;
 	}
 
+	private void isAppliable(GameState gameState) throws NotAppliableException {
+		if (isOcuppied(gameState) || filledRowOrCol(gameState)
+				|| hasThreeAdjacentTiles(gameState) || isColorFull(gameState)) {
+			throw new NotAppliableException();
+		}
+	}
+
 	private boolean isOcuppied(GameState state) {
 		return state.getBoard()[row][col] != 0;
+	}
+
+	private void blockOtherTailInRow(GameState state)
+			throws NotAppliableException {
+		for (int i = 0; i < GameState.SIZE; i++) { // recorro la fila
+			GameRule r = getRedRulesForTile(row, i); // genero las
+														// reglas de la
+														// fila
+			int[][] newBoard = copyBoard(state.getBoard());
+			newBoard[row][col] = color; // nuevo tablero con mi regla
+										// agregada
+			try {
+				r.isAppliable(new GameState(newBoard));
+			} catch (NotAppliableException e) { // si no puedo poner una
+												// regla
+				if (newBoard[r.row][r.col] == 0) {
+					r = getPairRule(r);
+					try {
+						r.isAppliable(new GameState(newBoard));
+					} catch (NotAppliableException e2) { // ni el otro color
+															// en el mismo
+															// lugar
+						throw new NotAppliableException();
+					}
+				}
+			}
+		}
+
+	}
+
+	private GameRule getPairRule(GameRule r) {
+		return new GameRule((r.color == 1) ? 2 : 1, r.row, r.col);
+	}
+
+	private int[][] copyBoard(int[][] board) {
+		int[][] newBoard = new int[GameState.SIZE][GameState.SIZE];
+		for (int i = 0; i < GameState.SIZE; i++) {
+			for (int j = 0; j < GameState.SIZE; j++) {
+				newBoard[i][j] = board[i][j];
+			}
+		}
+		return newBoard;
+	}
+
+	private void blockOtherTailInCol(GameState state)
+			throws NotAppliableException {
+		for (int i = 0; i < GameState.SIZE; i++) { // recorro la fila
+			GameRule r = getRedRulesForTile(i, col);
+			int[][] newBoard = copyBoard(state.getBoard());
+			newBoard[row][col] = color; // nuevo tablero con mi regla agregada
+			try {
+				r.isAppliable(new GameState(newBoard));
+			} catch (NotAppliableException e) { // si no puedo poner una regla
+				if (newBoard[r.row][r.col] == 0) {
+					r = getPairRule(r);
+					try {
+						r.isAppliable(new GameState(newBoard));
+					} catch (NotAppliableException e2) { // ni el otro color en
+															// el mismo lugar
+						throw new NotAppliableException();
+					}
+				}
+			}
+		}
+	}
+
+	private GameRule getRedRulesForTile(int r, int col) {
+		return new GameRule(GameState.RED, r, col);
 	}
 
 	private boolean isColorFull(GameState state) {
@@ -119,20 +199,20 @@ public class GameRule implements GPSRule {
 	private boolean filledRowOrCol(GameState state) {
 		int count = 0;
 		// check that there is not to many of color already in row
-		for (int i = 0; i < state.SIZE; i++) {
+		for (int i = 0; i < GameState.SIZE; i++) {
 			if (state.getBoard()[row][i] == color)
 				count++;
 		}
-		if (count > state.SIZE / 2 - 1)
+		if (count > GameState.SIZE / 2 - 1)
 			return true;
 
 		// check that there is not to many of color already in column
 		count = 0;
-		for (int i = 0; i < state.SIZE; i++) {
+		for (int i = 0; i < GameState.SIZE; i++) {
 			if (state.getBoard()[i][col] == color)
 				count++;
 		}
-		if (count > state.SIZE / 2 - 1)
+		if (count > GameState.SIZE / 2 - 1)
 			return true;
 		// If everything i ok
 		return false;
