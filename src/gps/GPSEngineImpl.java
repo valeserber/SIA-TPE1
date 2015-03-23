@@ -36,32 +36,35 @@ public class GPSEngineImpl extends GPSEngine {
 
 	private void addNodeAstar() {
 		// TODO Auto-generated method stub
-
 	}
 
 	private void addNodeGreedy(GPSNode node) {
 		if (!(node.getState() instanceof GameState)) {
 			throw new IllegalArgumentException();
 		}
-		if(open.size()==0){
+		if (open.size() == 0) {
 			((LinkedList<GPSNode>) open).addFirst(node);
 			return;
 		}
 		GameProblem g = new GameProblem();
-		GPSNode otherNode = open.get(0);
-		open.remove(0);
-		int hvalue = g.getHValue(node.getState(), heuristic);
-		int otherHvalue = g.getHValue(otherNode.getState(),heuristic);
-		int myColors = ((GameState)node.getState()).getColoredCount();
-		int otherColors= ((GameState)otherNode.getState()).getColoredCount();
-		
-		if(hvalue>=otherHvalue || myColors>otherColors){
-			((LinkedList<GPSNode>)open).addFirst(otherNode);
-			((LinkedList<GPSNode>)open).addFirst(node);
-		}else{
-			((LinkedList<GPSNode>)open).addFirst(node);
-			((LinkedList<GPSNode>)open).addFirst(otherNode);
+		int index = 0;
+		int openSize = open.size();
+		GPSNode actualNode = node;
+		int hvalue = g.getHValue(actualNode.getState(), heuristic);
+		int myColors = ((GameState) actualNode.getState()).getColoredCount();
+		while (index < openSize) {
+			GPSNode otherNode = open.get(index);
+			int otherHvalue = g.getHValue(otherNode.getState(), heuristic);
+			int otherColors = ((GameState) otherNode.getState())
+					.getColoredCount();
+			if (otherHvalue >= hvalue || otherColors < myColors) {
+				open.add(index, actualNode);
+				return;
+			} else {
+				index++;
+			}
 		}
+		open.add(actualNode);
 	}
 
 	private void addNodeIDDFS(GPSNode node) {
