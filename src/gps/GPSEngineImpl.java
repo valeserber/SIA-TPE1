@@ -50,8 +50,8 @@ public class GPSEngineImpl extends GPSEngine {
 		GameProblem g = new GameProblem();
 		GPSNode otherNode = open.get(0);
 		open.remove(0);
-		int hvalue = g.getHValue(node.getState());
-		int otherHvalue = g.getHValue(otherNode.getState());
+		int hvalue = g.getHValue(node.getState(), heuristic);
+		int otherHvalue = g.getHValue(otherNode.getState(),heuristic);
 		int myColors = ((GameState)node.getState()).getColoredCount();
 		int otherColors= ((GameState)otherNode.getState()).getColoredCount();
 		

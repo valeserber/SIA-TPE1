@@ -4,8 +4,8 @@ import gps.model.GameProblem;
 
 public class resolveGame {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		GPSEngine gps = new GPSEngineImpl();
-		gps.engine(new GameProblem(), SearchStrategy.Greedy);
+		gps.engine(new GameProblem(), SearchStrategy.DFS, Heuristic.POSSIBILITIES);
 	}
 }

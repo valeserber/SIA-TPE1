@@ -18,13 +18,15 @@ public abstract class GPSEngine {
 
 	private GPSProblem problem;
 
-	// Use this variable in the addNode implementation
 	protected SearchStrategy strategy;
+	
+	protected Heuristic heuristic;
 
-	public void engine(GPSProblem myProblem, SearchStrategy myStrategy) {
+	public void engine(GPSProblem myProblem, SearchStrategy myStrategy, Heuristic myHeuristic) throws InterruptedException {
 
 		problem = myProblem;
 		strategy = myStrategy;
+		heuristic = myHeuristic;
 
 		GPSNode rootNode = new GPSNode(problem.getInitState(), 0);
 		boolean finished = false;
@@ -63,8 +65,8 @@ public abstract class GPSEngine {
 				&& problem.isGoalState(currentNode.getState());
 	}
 
-	private  boolean explode(GPSNode node) {
-		((GameState)node.getState()).printBoard();
+	private  boolean explode(GPSNode node) throws InterruptedException {
+//		((GameState)node.getState()).printBoard();
 		if(problem.getRules() == null){
 			System.err.println("No rules!");
 			return false;
