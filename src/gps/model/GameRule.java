@@ -51,7 +51,7 @@ public class GameRule implements GPSRule {
 
 	private void isAppliable(GameState gameState) throws NotAppliableException {
 		if (isOcuppied(gameState) || filledRowOrCol(gameState)
-				|| hasThreeAdjacentTiles(gameState) || isColorFull(gameState)) {
+				|| hasThreeAdjacentTiles(gameState) || isColorFull(gameState))|| containsSimilarities(gameState) {
 			throw new NotAppliableException();
 		}
 	}
@@ -204,23 +204,102 @@ public class GameRule implements GPSRule {
 	private boolean filledRowOrCol(GameState state) {
 		int count = 0;
 		// check that there is not to many of color already in row
-		for (int i = 0; i < GameState.SIZE; i++) {
-			if (state.getBoard()[getRow()][i] == getColor())
+		for (int i = 0; i < state.getSize(); i++) {
+			if (state.getBoard()[row][i] == color)
 				count++;
 		}
-		if (count > GameState.SIZE / 2 - 1)
+		if (count > state.getSize() / 2 - 1)
 			return true;
 
 		// check that there is not to many of color already in column
 		count = 0;
-		for (int i = 0; i < GameState.SIZE; i++) {
-			if (state.getBoard()[i][getCol()] == getColor())
+		for (int i = 0; i < state.getSize(); i++) {
+			if (state.getBoard()[i][col] == color)
 				count++;
 		}
-		if (count > GameState.SIZE / 2 - 1)
+		if (count > state.getSize() / 2 - 1)
 			return true;
-		// If everything i ok
+		// If everything is ok
 		return false;
+	}
+
+	// check if new rule makes two rows or cols similar.	
+	private boolean containsSimilarities(GameState state) {
+		if (fillingRow(state, row)) {
+			int[] newRow = copyRow(state, row);
+			newRow[col] = color;
+			for (int i = 0; i < state.getSize(); i++) {
+				if (i != row && rowsEqual(newRow, state, i))
+					return true;
+			} 
+		}
+
+
+		if (fillingCol(state, col)) {
+			int[] newCol = copyCol(state, col);
+			newCol[row] = color;
+			for (int i = 0; i < state.getSize(); i++) {
+				if (i != col && colsEqual(newCol, state, i))
+					return true;
+			} 
+		}
+
+		return false;
+	}
+
+	// determines if applying the rule will create a filled row.
+	private boolean fillingRow(GameState state, int index) {
+		int count = 0;
+		for (int i = 0; i < state.getSize(); i++) {
+			if (state.getBoard()[index][i] != 0)
+				count++;
+		}
+		return count > state.getSize() - 2;
+	}
+
+	private boolean fillingCol(GameState state, int index) {
+		int count = 0;
+		for (int i = 0; i < state.getSize(); i++) {
+			if (state.getBoard()[i][index] != 0)
+				count++;
+		}
+		return count > state.getSize() - 2;
+	}
+
+	//copy the row that will get filled.
+	private int[] copyRow(GameState state, int index) {
+		int[] vector = new int[state.getSize()];
+		for (int i = 0; i < state.getSize(); i++) {
+			vector[i] = state.getBoard()[index][i];
+		}
+		return vector;
+	}
+	
+	private int[] copyCol(GameState state, int index) {
+		int[] vector = new int[state.getSize()];
+		for (int i = 0; i < state.getSize(); i++) {
+			vector[i] = state.getBoard()[i][index];
+		}
+		return vector;
+	}
+
+	//check if the new row is equal to row index.
+	private boolean rowsEqual(int[] row, GameState state, int index) {
+		for (int i = 0; i < state.getSize(); i++) {
+			if (row[i] != state.getBoard()[index][i])
+				return false;
+		}
+
+		return true;
+	}
+	
+	private boolean colsEqual(int[] col, GameState state, int index) {
+		for (int i = 0; i < state.getSize(); i++) {
+			if (col[i] != state.getBoard()[i][index])
+				return false;
+		}
+
+		return true;
 	}
 
 	public int getColor() {
