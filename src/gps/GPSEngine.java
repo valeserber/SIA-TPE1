@@ -34,11 +34,17 @@ public abstract class GPSEngine {
 		long explosionCounter = 0;
 
 		open.add(rootNode);
+		int i = 0;
 		while (!failed && !finished) {
 			if (open.size() <= 0) {
 				failed = true;
 			} else {
 				GPSNode currentNode = open.get(0);
+				if (i % 1 == 0) {
+					System.out.println("-- " + i);
+					((GameState)currentNode.getState()).printBoard();
+				}
+				i++;
 				closed.add(currentNode);
 				open.remove(0);
 				if (isGoal(currentNode)) {
@@ -66,18 +72,23 @@ public abstract class GPSEngine {
 	}
 
 	private  boolean explode(GPSNode node) throws InterruptedException {
-		((GameState)node.getState()).printBoard();
+//		((GameState)node.getState()).printBoard();
 		if(problem.getRules() == null){
 			System.err.println("No rules!");
 			return false;
 		}
 		List<GPSRule> rules = problem.getRules();
+		System.out.println("No of rules: " + rules.size());
 		for (GPSRule rule : rules) {
 			GPSState newState = null;
 			try {
 				newState = rule.evalRule(node.getState());
 			} catch (NotAppliableException e) {
 				// Do nothing
+			}
+			if (newState != null) {
+				System.out.println("sucess!");
+				((GameState)newState).printBoard();
 			}
 			if (newState != null
 					&& !checkBranch(node, newState)

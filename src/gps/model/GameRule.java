@@ -40,6 +40,7 @@ public class GameRule implements GPSRule {
 			throw new IllegalArgumentException();
 		}
 		GameState gameState = (GameState) state;
+		System.out.println("col: " + this.col + " row: " + this.row + " color: " + this.color);
 		isAppliable(gameState);
 		blockOtherTailInCol(gameState);
 		blockOtherTailInRow(gameState);
@@ -49,6 +50,7 @@ public class GameRule implements GPSRule {
 	}
 
 	private void isAppliable(GameState gameState) throws NotAppliableException {
+		System.out.println("hasThreeAdjecentTiles " + hasThreeAdjacentTiles(gameState));
 		if (isOcuppied(gameState) || filledRowOrCol(gameState)
 				|| hasThreeAdjacentTiles(gameState) || isColorFull(gameState) || containsSimilarities(gameState)) {
 			throw new NotAppliableException();
