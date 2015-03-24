@@ -9,8 +9,7 @@ import java.util.List;
 
 public class GameRule implements GPSRule {
 
-	// TODO 1: Falta la regla de que no haya dos columnas o filas IGUALES
-	// TODO 2: ¿Puedo encadenar blockRow con blockCol? Usar tests para probar
+	// TODO 1: ¿Puedo encadenar blockRow con blockCol? Usar tests para probar
 
 	private int color;
 	private int row;
@@ -51,7 +50,7 @@ public class GameRule implements GPSRule {
 
 	private void isAppliable(GameState gameState) throws NotAppliableException {
 		if (isOcuppied(gameState) || filledRowOrCol(gameState)
-				|| hasThreeAdjacentTiles(gameState) || isColorFull(gameState))|| containsSimilarities(gameState) {
+				|| hasThreeAdjacentTiles(gameState) || isColorFull(gameState) || containsSimilarities(gameState)) {
 			throw new NotAppliableException();
 		}
 	}
