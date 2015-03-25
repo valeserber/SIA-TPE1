@@ -177,7 +177,7 @@ public class GameRule implements GPSRule {
 		int left = 0;
 		for (int i = 1; i < 3; i++) {
 			if (getCol() - i >= 0) {
-				if (board[getRow()][getCol() - 1] == getColor()) {
+				if (board[getRow()][getCol() - i] == getColor()) {
 					left++;
 				}
 			}
