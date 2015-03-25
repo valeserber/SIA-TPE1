@@ -109,4 +109,16 @@ public class GameState implements GPSState {
 		System.out.println("\n");
 	}
 	
+	public String toString() {
+		String ret = "";
+		for(int i=0;i<SIZE;i++){
+			for(int j=0;j<SIZE;j++){
+				ret += board[i][j];
+			}
+			ret += "\n";
+		}
+		ret += "\n";
+		return ret;
+	}
+	
 }
