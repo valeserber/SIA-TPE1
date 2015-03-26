@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class GPSEngine {
-
+	//hola
 	private List<GPSNode> open = new LinkedList<GPSNode>();
 
 	private List<GPSNode> closed = new ArrayList<GPSNode>();
