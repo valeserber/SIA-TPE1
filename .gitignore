@@ -1,6 +1,6 @@
 bin/
 *.class
-
+.project
 .DS_Store
-
+.settings/
 .classpath
