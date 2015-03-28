@@ -175,21 +175,21 @@ public class RulesTests {
 //		GPSState state = new GameState(board);
 //		rule.evalRule(state);
 //	}
-	
-	@org.junit.Test
-	public void testEvalRuleOkay() throws NotAppliableException {
-		GameRule rule = new GameRule(1, 3, 6);
-		int[][] board = 
-			{{1,2,1,2,1,1,2,2},
-			{2,0,0,1,0,2,1,1},
-			{0,0,0,1,2,0,2,2},
-			{2,0,2,2,1,0,0,1},
-			{1,2,0,2,0,2,1,2},
-			{1,2,0,1,2,0,0,2},
-			{2,1,2,1,2,1,2,1},
-			{2,1,2,2,1,2,1,1}};
-		GPSState state = new GameState(board);
-		rule.evalRule(state);
-	}
+//	
+//	@org.junit.Test
+//	public void testEvalRuleOkay() throws NotAppliableException {
+//		GameRule rule = new GameRule(1, 3, 6);
+//		int[][] board = 
+//			{{1,2,1,2,1,1,2,2},
+//			{2,0,0,1,0,2,1,1},
+//			{0,0,0,1,2,0,2,2},
+//			{2,0,2,2,1,0,0,1},
+//			{1,2,0,2,0,2,1,2},
+//			{1,2,0,1,2,0,0,2},
+//			{2,1,2,1,2,1,2,1},
+//			{2,1,2,2,1,2,1,1}};
+//		GPSState state = new GameState(board);
+//		rule.evalRule(state);
+//	}
 
 }

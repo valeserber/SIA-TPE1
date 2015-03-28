@@ -1,7 +1,12 @@
 package tests;
 
-import gps.GPSEngineImpl;
+import gps.AStarEngine;
+import gps.BFSEngine;
+import gps.DFSEngine;
+import gps.GPSEngine;
+import gps.GreedyEngine;
 import gps.Heuristic;
+import gps.IDDFSEngine;
 import gps.SearchStrategy;
 import gps.model.GameProblem;
 
@@ -21,7 +26,8 @@ public class UserInterface {
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					System.in));
 
-			String input, inputAlgorithm;
+			String input, inputAlgorithm, level;
+			Integer n = null;
 			Heuristic heuristic=Heuristic.USEFULSTATE;
 			SearchStrategy strategy=SearchStrategy.AStar;
 
@@ -82,19 +88,49 @@ public class UserInterface {
 					System.out.println("Enter a letter between A and E");
 				}
 			}
-			
-			Run(strategy,heuristic);
+			notEntered = true;
+			System.out.println("Select a Level from 1 to 5\n");
+			while (notEntered && (level = br.readLine()) != null) {
+				String s = level.substring(0, 1);
+				try {
+					n = Integer.parseInt(s);
+					notEntered = false;
+				} catch (NumberFormatException e) {
+					System.out.println("Invalid level");
+				}
+			}
+			Run(strategy, heuristic, n);
 
 		} catch (IOException io) {
 			io.printStackTrace();
 		}
 	}
 	
-	private static void Run(SearchStrategy strategy, Heuristic heuristic) {
-		GameProblem problem = new GameProblem();
-		GPSEngineImpl engine = new GPSEngineImpl();
+	private static void Run(SearchStrategy strategy, Heuristic heuristic, int level) {
+		GameProblem problem = new GameProblem(level);
+		GPSEngine gps = null;
+
+		switch(strategy) {
+		case BFS:
+			gps = new BFSEngine();
+			break;
+		case DFS:
+			gps = new DFSEngine();
+			break;
+		case AStar:
+			gps = new AStarEngine();
+			break;
+		case IDDFS:
+			gps = new IDDFSEngine();
+			break;
+		case GREEDY:
+			gps = new GreedyEngine();
+			break;
+		default:
+			break;
+		}
 		try {
-			engine.engine(problem, strategy, heuristic);
+			gps.engine(problem, strategy, heuristic);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
