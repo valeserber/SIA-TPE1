@@ -3,5 +3,6 @@ package gps;
 public enum Heuristic {
 	ROWS,
 	POSSIBILITIES,
-	MINCOLOR
+	MINCOLOR,
+	USEFULSTATE
 }

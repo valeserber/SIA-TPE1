@@ -68,7 +68,7 @@ public class GameRule implements GPSRule {
 			GameState newState = new GameState(state);
 			newState.addColor(getColor(), getRow(), getCol());// nuevo tablero
 																// con mi regla
-			// agregada
+															// agregada
 			try {
 				r.isAppliable(newState);
 			} catch (NotAppliableException e) { // si no puedo poner una
