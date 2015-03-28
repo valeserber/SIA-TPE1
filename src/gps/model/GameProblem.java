@@ -28,13 +28,13 @@ public class GameProblem implements GPSProblem {
 		
 		int[][] board = { 
 				{ 1, 2, 2, 1, 2, 2, 1, 1 },
-				{ 2, 1, 1, 2, 2, 1, 2, 1 }, 
-				{ 1, 2, 1, 2, 1, 2, 1, 2 },
-				{ 2, 1, 2, 1, 1, 2, 1, 2 }, 
-				{ 2, 2, 1, 1, 2, 1, 2, 1 },
+				{ 2, 1, 0, 0, 2, 1, 2, 1 }, 
+				{ 1, 2, 1, 0, 1, 2, 0, 2 },
+				{ 2, 1, 2, 0, 1, 2, 1, 2 }, 
+				{ 2, 2, 1, 1, 2, 1, 0, 1 },
 				{ 0, 1, 0, 2, 1, 2, 1, 2 }, 
-				{ 1, 2, 2, 1, 2, 1, 2, 1 },
-				{ 0, 1, 0, 2, 1, 1, 2, 2 } };
+				{ 1, 2, 2, 1, 0, 1, 0, 1 },
+				{ 0, 1, 0, 2, 1, 1, 0, 2 } };
 
 		GPSState initialState = new GameState(board);
 		return initialState;
@@ -110,6 +110,12 @@ public class GameProblem implements GPSProblem {
 				}
 			}
 			return possibilities;
+		}else if(heuristic== Heuristic.MINCOLOR){
+			int blue= gameState.getBlueCount();
+			int red = gameState.getRedCount();
+			int maxTilesColor = (GameState.SIZE*GameState.SIZE)/2;
+			return (blue<red?(maxTilesColor-blue):(maxTilesColor-red));
+		
 		}else {
 			throw new IllegalArgumentException();
 		}

@@ -17,7 +17,7 @@ public class GPSEngineImpl extends GPSEngine {
 			break;
 		case IDDFS:
 			addNodeIDDFS(node);
-		case Greedy:
+		case GREEDY:
 			addNodeGreedy(node);
 		case AStar:
 			addNodeAstar();
