@@ -10,7 +10,7 @@ public class Tester {
 		GameProblem problem = new GameProblem();
 		GPSEngineImpl engine = new GPSEngineImpl();
 		try {
-			engine.engine(problem, SearchStrategy.GREEDY, Heuristic.MINCOLOR);
+			engine.engine(problem, SearchStrategy.GREEDY, Heuristic.USEFULSTATE);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
