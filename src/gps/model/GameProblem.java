@@ -6,11 +6,29 @@ import gps.api.GPSRule;
 import gps.api.GPSState;
 import gps.exception.NotAppliableException;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 public class GameProblem implements GPSProblem {
+	
+	List<GPSRule> ruleList;
+	
+	public GameProblem() {
+		
+		ruleList = new ArrayList<GPSRule>();
+		for (int c = 1; c < 3; c++) {
+			for (int i = 0; i < GameState.SIZE; i++) {
+				for (int j = 0; j < GameState.SIZE; j++) {
+					GameRule rule = new GameRule(c, i, j);
+					ruleList.add(rule);
+				}
+			}
+		}
+		Collections.shuffle(ruleList);
+		
+	}
 
 	@Override
 	public GPSState getInitState() {
@@ -41,20 +59,7 @@ public class GameProblem implements GPSProblem {
 
 	@Override
 	public List<GPSRule> getRules() {
-		LinkedList<GPSRule> rules = new LinkedList<GPSRule>();
-		int[][] initialBoard = ((GameState) getInitState()).getBoard();
-		for (int c = 1; c < 3; c++) {
-			for (int i = 0; i < GameState.SIZE; i++) {
-				for (int j = 0; j < GameState.SIZE; j++) {
-					if (initialBoard[i][j] == 0) {
-						GameRule rule = new GameRule(c, i, j);
-						rules.addFirst(rule);
-					}
-				}
-			}
-		}
-		Collections.shuffle(rules);
-		return rules;
+		return ruleList;
 	}
 
 	// private boolean hasNearColoredTiles(int i, int j) {
