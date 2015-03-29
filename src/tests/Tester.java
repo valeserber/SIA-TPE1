@@ -8,6 +8,7 @@ import gps.SearchStrategy;
 
 public class Tester {
 	public static void main(String[] args) {
+		long time = System.currentTimeMillis();
 		GameProblem problem = new GameProblem();
 		
 //		GameState state = (GameState) problem.getInitState();
@@ -32,6 +33,9 @@ public class Tester {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		time -= System.currentTimeMillis();
+		System.out.println("time: " + (-time));
 	}
 
 }
