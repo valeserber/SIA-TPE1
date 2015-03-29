@@ -14,11 +14,11 @@ public class GameProblem implements GPSProblem {
 
 	@Override
 	public GPSState getInitState() {
-//		 int[][] board = { { 1, 0, 0, 0, 0, 0, 0, 0 },
-//		 { 0, 0, 2, 2, 0, 2, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 1 },
-//		 { 0, 1, 2, 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 1, 0, 0, 2 },
-//		 { 1, 1, 0, 0, 1, 0, 2, 2 }, { 0, 0, 0, 0, 0, 0, 0, 0 },
-//		 { 0, 0, 0, 0, 0, 2, 2, 0 } };
+		// int[][] board = { { 1, 0, 0, 0, 0, 0, 0, 0 },
+		// { 0, 0, 2, 2, 0, 2, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 1 },
+		// { 0, 1, 2, 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 1, 0, 0, 2 },
+		// { 1, 1, 0, 0, 1, 0, 2, 2 }, { 0, 0, 0, 0, 0, 0, 0, 0 },
+		// { 0, 0, 0, 0, 0, 2, 2, 0 } };
 
 		// int[][] board = { { 1, 2, 1, 2, 1, 1, 2, 2 },
 		// { 2, 0, 0, 1, 0, 2, 1, 1 }, { 0, 0, 0, 1, 2, 0, 2, 2 },
@@ -26,11 +26,11 @@ public class GameProblem implements GPSProblem {
 		// { 1, 2, 0, 1, 2, 0, 0, 2 }, { 2, 1, 2, 1, 2, 1, 2, 1 },
 		// { 2, 1, 2, 2, 1, 2, 1, 1 } };
 
-		int[][] board = { { 0, 2, 0, 1, 2, 0, 1, 0 },
-				{ 2, 1, 0, 0, 2, 1, 2, 1 }, { 1, 2, 1, 0, 1, 2, 0, 2 },
-				{ 2, 0, 0, 0, 0, 0, 0, 0 }, { 2, 0, 1, 1, 2, 1, 0, 1 },
-				{ 0, 1, 0, 2, 1, 2, 1, 2 }, { 1, 2, 2, 1, 0, 1, 0, 1 },
-				{ 0, 1, 0, 2, 1, 1, 0, 2 } };
+		int[][] board = { { 1, 2, 2, 1, 2, 2, 1, 1 },
+				{ 2, 1, 1, 2, 2, 1, 2, 1 }, { 1, 2, 1, 2, 1, 2, 1, 2 },
+				{ 2, 1, 2, 1, 1, 2, 1, 2 }, { 2, 2, 1, 1, 2, 1, 2, 1 },
+				{ 0, 1, 0, 2, 1, 2, 1, 2 }, { 1, 2, 2, 1, 2, 1, 2, 1 },
+				{ 0, 1, 0, 2, 1, 1, 2, 2 } };
 
 		GPSState initialState = new GameState(board);
 		return initialState;
@@ -119,7 +119,7 @@ public class GameProblem implements GPSProblem {
 				}
 			}
 			if (cantRow == GameState.SIZE - 2) {
-//				sameRow = checkNoTwoSameColumns(gameState, r);
+				// sameRow = checkNoTwoSameColumns(gameState, r);
 			}
 			if (cantRow == GameState.SIZE - 1) {
 				semiFullRow++;
