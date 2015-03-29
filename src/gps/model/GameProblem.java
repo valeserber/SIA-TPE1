@@ -14,23 +14,26 @@ public class GameProblem implements GPSProblem {
 
 	@Override
 	public GPSState getInitState() {
-//		 int[][] board = { { 1, 0, 0, 0, 0, 0, 0, 0 },
-//		 { 0, 0, 2, 2, 0, 2, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 1 },
-//		 { 0, 1, 2, 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 1, 0, 0, 2 },
-//		 { 1, 1, 0, 0, 1, 0, 2, 2 }, { 0, 0, 0, 0, 0, 0, 0, 0 },
-//		 { 0, 0, 0, 0, 0, 2, 2, 0 } };
+		 int[][] board = { { 1, 0, 0, 0, 0, 0, 0, 0 },
+		 { 0, 0, 2, 2, 0, 2, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 1 },
+		 { 0, 1, 2, 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 1, 0, 0, 2 },
+		 { 1, 1, 0, 0, 1, 0, 2, 2 }, { 0, 0, 0, 0, 0, 0, 0, 0 },
+		 { 0, 0, 0, 0, 0, 2, 2, 0 } };
 
-		// int[][] board = { { 1, 2, 1, 2, 1, 1, 2, 2 },
-		// { 2, 0, 0, 1, 0, 2, 1, 1 }, { 0, 0, 0, 1, 2, 0, 2, 2 },
-		// { 2, 0, 2, 2, 1, 0, 0, 1 }, { 1, 2, 0, 2, 0, 2, 1, 2 },
-		// { 1, 2, 0, 1, 2, 0, 0, 2 }, { 2, 1, 2, 1, 2, 1, 2, 1 },
-		// { 2, 1, 2, 2, 1, 2, 1, 1 } };
+//		 int[][] board = { { 1, 2, 1, 2, 1, 1, 2, 2 },
+//		 { 2, 0, 0, 1, 0, 2, 1, 1 }, { 0, 0, 0, 1, 2, 0, 2, 2 },
+//		 { 2, 0, 2, 2, 1, 0, 0, 1 }, { 1, 2, 0, 2, 0, 2, 1, 2 },
+//		 { 1, 2, 0, 1, 2, 0, 0, 2 }, { 2, 1, 2, 1, 2, 1, 2, 1 },
+//		 { 2, 1, 2, 2, 1, 2, 1, 1 } };
 
-		int[][] board = { { 0, 2, 0, 1, 2, 0, 1, 0 },
-				{ 2, 1, 0, 0, 2, 1, 2, 1 }, { 1, 2, 1, 0, 1, 2, 0, 2 },
-				{ 2, 0, 0, 0, 0, 0, 0, 0 }, { 2, 0, 1, 1, 2, 1, 0, 1 },
-				{ 0, 1, 0, 2, 1, 2, 1, 2 }, { 1, 2, 2, 1, 0, 1, 0, 1 },
-				{ 0, 1, 0, 2, 1, 1, 0, 2 } };
+//		int[][] board = { { 0, 1, 2, 2, 1, 1, 2, 0 },
+//				{ 2, 1, 2, 1, 2, 1, 1, 2 }, 
+//				{ 0, 2, 1, 1, 2, 2, 1, 0 },
+//				{ 2, 1, 1, 2, 1, 2, 2, 1 }, 
+//				{ 1, 2, 2, 1, 2, 1, 1, 2 },
+//				{ 2, 1, 2, 1, 2, 1, 2, 1 }, 
+//				{ 0, 0, 1, 2, 1, 2, 1, 2 },
+//				{ 1, 2, 1, 2, 1, 2, 2, 1 } };
 
 		GPSState initialState = new GameState(board);
 		return initialState;
@@ -92,19 +95,51 @@ public class GameProblem implements GPSProblem {
 	private Integer getHValueUsefulState(GameState gameState) {
 		int blue = 0;
 		int red = 0;
-		int colorFull = 0;
+		int colorFullRow = 0;
+		int colorFullCol = 0;
 		int doubleCount = 0;
 		int semiFullRow = 0;
-		int sameRow = 0;
+		int semiFullCol = 0;
+//		int sameRow = 0;
 		int[][] board = gameState.getBoard();
 		int maxTiles = (GameState.SIZE * GameState.SIZE);
-		for (int r = 0; r < GameState.SIZE - 1; r++) {
-			int cantRow = 0;
-			for (int c = 0; c < GameState.SIZE - 1; c++) {
+		for (int r = 0; r < GameState.SIZE; r++) {
+			int freeTiles = 0;
+			for (int c = 0; c < GameState.SIZE; c++) {
 				int actualTile = board[r][c];
 				// Count number of colored tiles in row
 				if (actualTile != GameState.EMPTY) {
-					cantRow++;
+					// Count red and blue tiles in row
+					if (actualTile == GameState.RED) {
+						red++;
+					} else if (actualTile == GameState.BLUE) {
+						blue++;
+					}
+					doubleCount = checkDoubleColor(gameState, r, c, doubleCount);
+				} else {
+					// Count empty spaces that should be colored because of the
+					// "NoThreeAdjacent" rule
+					freeTiles++;
+				}
+			}
+			if (freeTiles == 2) {
+//				sameRow = checkNoTwoSameColumns(gameState, r);
+			}
+			if (freeTiles == 1) {
+				semiFullRow++;
+			}
+			if (blue == (GameState.SIZE / 2) || red == (GameState.SIZE / 2)
+					&& freeTiles != 0) {
+				colorFullRow++;
+			}
+		}
+		
+		for (int c = 0; c < GameState.SIZE; c++) {
+			int freeTiles = 0;
+			for (int r = 0; r < GameState.SIZE; r++) {
+				int actualTile = board[r][c];
+				// Count number of colored tiles in row
+				if (actualTile != GameState.EMPTY) {
 
 					// Count red and blue tiles in row
 					if (actualTile == GameState.RED) {
@@ -113,26 +148,34 @@ public class GameProblem implements GPSProblem {
 						blue++;
 					}
 
-					// Count empty spaces that should be colored because of the
-					// "NoThreeAdjacent" rule
-					doubleCount = checkDoubleColor(gameState, r, c, doubleCount);
+				} else {
+					freeTiles++;
 				}
 			}
-			if (cantRow == GameState.SIZE - 2) {
+			if (freeTiles == 2) {
 //				sameRow = checkNoTwoSameColumns(gameState, r);
 			}
-			if (cantRow == GameState.SIZE - 1) {
-				semiFullRow++;
+			if (freeTiles == 1) {
+				semiFullCol++;
 			}
 			if (blue == (GameState.SIZE / 2) || red == (GameState.SIZE / 2)
-					&& cantRow != GameState.SIZE) {
-				colorFull++;
+					&& freeTiles != 0) {
+				colorFullCol++;
 			}
 		}
 
-		int ret = maxTiles
-				- (gameState.getColoredCount() - doubleCount - semiFullRow
-						- colorFull - sameRow);
+		int ret = 10*maxTiles
+				- 10*gameState.getColoredCount() + doubleCount + semiFullRow +
+				semiFullCol + colorFullCol + colorFullRow;
+//		System.out.println("----" + ret);
+//		System.out.println(10*maxTiles);
+//		System.out.println(10*gameState.getColoredCount());
+//		System.out.println(doubleCount);
+//		System.out.println(semiFullRow);
+//		System.out.println(semiFullCol);
+//		System.out.println(colorFullCol);
+//		System.out.println(colorFullRow);
+//		System.out.println(gameState);
 		return ret >= 0 ? ret : 0;
 	}
 
@@ -155,28 +198,30 @@ public class GameProblem implements GPSProblem {
 		return 0;
 	}
 
-	private int checkDoubleColor(GameState gameState, int row, int col,
+	public int checkDoubleColor(GameState gameState, int row, int col,
 			int doubleCount) {
 		int[][] board = gameState.getBoard();
 		int actualTile = board[row][col];
-		if (actualTile == board[row + 1][col]) {
-			if (row + 2 < GameState.SIZE
-					&& board[row + 2][col] == GameState.EMPTY || row - 1 >= 0
-					&& board[row - 1][col] == GameState.EMPTY) {
+		if (row + 1 < GameState.SIZE && actualTile == board[row + 1][col]) {
+			if ((row + 2 < GameState.SIZE
+					&& board[row + 2][col] == GameState.EMPTY) || (row - 1 >= 0
+					&& board[row - 1][col] == GameState.EMPTY)) {
 				doubleCount++;
 			}
 		}
-		if (actualTile == board[row][col + 1]) {
-			if (col + 2 < GameState.SIZE
-					&& board[row][col + 2] == GameState.EMPTY || col - 1 >= 0
-					&& board[row][col - 1] == GameState.EMPTY) {
+		if (col + 1 < GameState.SIZE && actualTile == board[row][col + 1]) {
+			if ((col + 2 < GameState.SIZE
+					&& board[row][col + 2] == GameState.EMPTY) || (col - 1 >= 0
+					&& board[row][col - 1] == GameState.EMPTY)) {
 				doubleCount++;
 			}
 		}
-		if (row + 2 < GameState.SIZE && actualTile == board[row + 2][col]) {
+		if (row + 2 < GameState.SIZE && actualTile == board[row + 2][col] && 
+				GameState.EMPTY == board[row + 1][col]) {
 			doubleCount++;
 		}
-		if (col + 2 < GameState.SIZE && actualTile == board[row][col + 2]) {
+		if (col + 2 < GameState.SIZE && actualTile == board[row][col + 2] && 
+				GameState.EMPTY == board[row][col + 1]) {
 			doubleCount++;
 		}
 
