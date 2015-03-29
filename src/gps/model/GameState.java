@@ -13,6 +13,7 @@ public class GameState implements GPSState {
 	private int blue;
 	private int size;
 	private int[][] board;
+	private int hValue = -1;
 
 	public GameState(int size) {
 		this.size = size;
@@ -119,6 +120,14 @@ public class GameState implements GPSState {
 		}
 		ret += "\n";
 		return ret;
+	}
+	
+	public void setHValue(int hValue) {
+		this.hValue = hValue;
+	}
+	
+	public int getHValue() {
+		return hValue;
 	}
 	
 }
