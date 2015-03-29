@@ -8,6 +8,9 @@ import java.util.LinkedList;
 public class GPSEngineImpl extends GPSEngine {
 
 	public void addNode(GPSNode node) {
+		if (!(node.getState() instanceof GameState)) {
+			throw new IllegalArgumentException();
+		}
 		switch (strategy) {
 		case DFS:
 			addNodeDFS(node);
@@ -20,7 +23,7 @@ public class GPSEngineImpl extends GPSEngine {
 		case GREEDY:
 			addNodeGreedy(node);
 		case AStar:
-			addNodeAstar();
+			addNodeAstar(node);
 		default:
 			break;
 		}
@@ -34,14 +37,30 @@ public class GPSEngineImpl extends GPSEngine {
 		open.add(node);
 	}
 
-	private void addNodeAstar() {
-		// TODO Auto-generated method stub
+	private void addNodeAstar(GPSNode node) {
+		if (open.size() == 0) {
+			((LinkedList<GPSNode>) open).addFirst(node);
+			return;
+		}
+		GameProblem g = new GameProblem();
+		int index = 0;
+		int openSize = open.size();
+		GPSNode actualNode = node;
+		int fvalue = g.getHValue(actualNode.getState(), heuristic) + actualNode.getCost();
+		while (index < openSize) {
+			GPSNode otherNode = open.get(index);
+			int otherFvalue = g.getHValue(otherNode.getState(), heuristic) + otherNode.getCost();
+			if (otherFvalue >= fvalue) {
+				open.add(index, actualNode);
+				return;
+			} else {
+				index++;
+			}
+		}
+		open.add(actualNode);
 	}
 
 	private void addNodeGreedy(GPSNode node) {
-		if (!(node.getState() instanceof GameState)) {
-			throw new IllegalArgumentException();
-		}
 		if (open.size() == 0) {
 			((LinkedList<GPSNode>) open).addFirst(node);
 			return;

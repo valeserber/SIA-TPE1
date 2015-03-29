@@ -4,9 +4,6 @@ import gps.api.GPSRule;
 import gps.api.GPSState;
 import gps.exception.NotAppliableException;
 
-import java.util.LinkedList;
-import java.util.List;
-
 public class GameRule implements GPSRule {
 
 	// TODO 1: ¿Puedo encadenar blockRow con blockCol? Usar tests para probar
