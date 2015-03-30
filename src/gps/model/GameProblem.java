@@ -79,8 +79,8 @@ public class GameProblem implements GPSProblem {
 		}
 		GameState gameState = (GameState) state;
 		switch (heuristic) {
-		case ROWS:
-			return getHValueRows(gameState);
+		case COLUMNS:
+			return getHValueCols(gameState);
 		case POSSIBILITIES:
 			return getHValuePossibilities(gameState);
 		case MINCOLOR:
@@ -213,7 +213,7 @@ public class GameProblem implements GPSProblem {
 		return possibilities;
 	}
 
-	private Integer getHValueRows(GameState gameState) {
+	private Integer getHValueCols(GameState gameState) {
 		int[][] board = gameState.getBoard();
 		int maxCant = 0;
 		for (int col = 0; col < GameState.SIZE; col++) {

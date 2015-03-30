@@ -47,7 +47,7 @@ public class GameRule implements GPSRule {
 		updatedState.addColor(getColor(), getRow(), getCol());
 		return updatedState;
 	}
-
+	
 	private void isAppliable(GameState gameState) throws NotAppliableException {
 		if (isOcuppied(gameState) || filledRowOrCol(gameState)
 				|| hasThreeAdjacentTiles(gameState) || isColorFull(gameState) || containsSimilarities(gameState)) {

@@ -17,7 +17,7 @@ import java.io.InputStreamReader;
 public class UserInterface {
 	public static void main(String[] args) {
 		System.out.println("Select Heuristic\n");
-		System.out.println("1-Rows");
+		System.out.println("1-Columns");
 		System.out.println("2-Possibilities");
 		System.out.println("3-Minimun Color");
 		System.out.println("4-Useful State");
@@ -35,7 +35,7 @@ public class UserInterface {
 				System.out.println("You select:" + input + "\n");
 				switch (Integer.parseInt(input)) {
 				case 1:
-					heuristic = Heuristic.ROWS;
+					heuristic = Heuristic.COLUMNS;
 					notEntered = false;
 					break;
 				case 2:
@@ -62,7 +62,7 @@ public class UserInterface {
 			System.out.println("D-GREEDY");
 			System.out.println("E-A*");
 			while (notEntered && (inputAlgorithm = br.readLine()) != null) {
-				System.out.println("You select Algotithm: " + inputAlgorithm);
+				System.out.println("You select Algorithm: " + inputAlgorithm);
 				switch (inputAlgorithm) {
 				case "A":
 					strategy = SearchStrategy.BFS;
