@@ -58,7 +58,7 @@ public class UserInterface {
 			System.out.println("Select Algotithm\n");
 			System.out.println("A-BFS");
 			System.out.println("B-DFS");
-			System.out.println("C-PI");
+			System.out.println("C-IDDFS");
 			System.out.println("D-GREEDY");
 			System.out.println("E-A*");
 			while (notEntered && (inputAlgorithm = br.readLine()) != null) {
@@ -94,9 +94,13 @@ public class UserInterface {
 				String s = level.substring(0, 1);
 				try {
 					n = Integer.parseInt(s);
-					notEntered = false;
+					if (n < 1 || n > 5) {
+						System.out.println("Invalid level");
+					} else {
+						notEntered = false;
+					}
 				} catch (NumberFormatException e) {
-					System.out.println("Invalid level");
+					System.out.println("Enter a number between 1 and 5");
 				}
 			}
 			Run(strategy, heuristic, n);
