@@ -4,6 +4,7 @@ import gps.api.GPSProblem;
 import gps.api.GPSRule;
 import gps.api.GPSState;
 import gps.exception.NotAppliableException;
+import gps.model.GameState;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -33,12 +34,23 @@ public abstract class GPSEngine {
 		long explosionCounter = 0;
 
 		open.add(rootNode);
+		int i = 0;
+		int j = -50 + 18;
 		while (!failed && !finished) {
-			if (open.size() <= 0) {
+			i++;
+			if (open.size() <= 0 || i > 50000) {
 				failed = true;
 			} else {
 				GPSNode currentNode = open.get(0);
 				closed.add(currentNode);
+				if (closed.size() % 20000 == 0) {
+					failed = true;
+				}
+//				if (((GameState) currentNode.getState()).getColoredCount() < 50)
+//					System.out.println("--" + i + "--" + ((GameState) currentNode.getState()).getColoredCount() + " -- " + j++);
+//				System.out.println("row: " + (1 + ((GameState) currentNode.getState()).row));
+//				System.out.println("col: " + (1 + ((GameState) currentNode.getState()).col));
+//				System.out.println(((GameState) currentNode.getState()));
 				open.remove(0);
 				if (isGoal(currentNode)) {
 					finished = true;
