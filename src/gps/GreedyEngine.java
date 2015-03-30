@@ -1,6 +1,5 @@
 package gps;
 
-import gps.model.GameProblem;
 import gps.model.GameState;
 
 import java.util.LinkedList;
