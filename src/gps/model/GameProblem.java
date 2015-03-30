@@ -5,40 +5,20 @@ import gps.api.GPSProblem;
 import gps.api.GPSRule;
 import gps.api.GPSState;
 import gps.exception.NotAppliableException;
+import gps.utils.Board;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
 public class GameProblem implements GPSProblem {
-
-	@Override
-	public GPSState getInitState() {
-		// int[][] board = { { 1, 0, 0, 0, 0, 0, 0, 0 },
-		// { 0, 0, 2, 2, 0, 2, 0, 0 }, { 0, 0, 0, 0, 0, 0, 0, 1 },
-		// { 0, 1, 2, 0, 0, 1, 0, 0 }, { 0, 0, 0, 0, 1, 0, 0, 2 },
-		// { 1, 1, 0, 0, 1, 0, 2, 2 }, { 0, 0, 0, 0, 0, 0, 0, 0 },
-		// { 0, 0, 0, 0, 0, 2, 2, 0 } };
-
-		// int[][] board = { { 1, 2, 1, 2, 1, 1, 2, 2 },
-		// { 2, 0, 0, 1, 0, 2, 1, 1 }, { 0, 0, 0, 1, 2, 0, 2, 2 },
-		// { 2, 0, 2, 2, 1, 0, 0, 1 }, { 1, 2, 0, 2, 0, 2, 1, 2 },
-		// { 1, 2, 0, 1, 2, 0, 0, 2 }, { 2, 1, 2, 1, 2, 1, 2, 1 },
-		// { 2, 1, 2, 2, 1, 2, 1, 1 } };
-
-		int[][] board = { { 1, 2, 2, 1, 2, 2, 1, 1 },
-				{ 2, 1, 1, 2, 2, 1, 2, 1 }, { 1, 2, 1, 2, 1, 2, 1, 2 },
-				{ 2, 1, 2, 1, 1, 2, 1, 2 }, { 2, 2, 1, 1, 2, 1, 2, 1 },
-				{ 0, 1, 0, 2, 1, 2, 1, 2 }, { 1, 2, 2, 1, 2, 1, 2, 1 },
-				{ 0, 1, 0, 2, 1, 1, 2, 2 } };
-
-		GPSState initialState = new GameState(board);
-		return initialState;
-	}
-
-	@Override
-	public List<GPSRule> getRules() {
-		LinkedList<GPSRule> rules = new LinkedList<GPSRule>();
+	
+	private int[][] initialBoard;
+	private LinkedList<GPSRule> rules;
+	
+	public GameProblem(Integer boardLevel) {
+		initialBoard = Board.getInitialBard(boardLevel);
+		rules = new LinkedList<GPSRule>();
 		int[][] initialBoard = ((GameState) getInitState()).getBoard();
 		for (int c = 1; c < 3; c++) {
 			for (int i = 0; i < GameState.SIZE; i++) {
@@ -51,7 +31,31 @@ public class GameProblem implements GPSProblem {
 			}
 		}
 		Collections.shuffle(rules);
+	}
+	
+	@Override
+	public GPSState getInitState() {
+		GPSState initialState = new GameState(initialBoard);
+		countSpacesLeft();
+		return initialState;
+	}
+
+	@Override
+	public List<GPSRule> getRules() {
+		Collections.shuffle(rules);
 		return rules;
+	}
+	
+	private void countSpacesLeft() {
+		int count=0;
+		for (int i=0; i< initialBoard.length; i++) {
+			for (int j=0; j< initialBoard.length; j++) {
+				if (initialBoard[i][j] == 0){
+					count++;
+				}
+			}
+		}
+//		System.out.println("Lugares vacios: "+count);
 	}
 
 	// private boolean hasNearColoredTiles(int i, int j) {

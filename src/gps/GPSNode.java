@@ -9,11 +9,14 @@ public class GPSNode {
 	private GPSNode parent;
 
 	private Integer cost;
+	
+	private Integer depth;
 
-	public GPSNode(GPSState state, Integer cost) {
+	public GPSNode(GPSState state, Integer cost, Integer depth) {
 		super();
 		this.state = state;
 		this.cost = cost;
+		this.depth = depth;
 	}
 
 	public GPSNode getParent() {
@@ -32,6 +35,10 @@ public class GPSNode {
 		return cost;
 	}
 
+	public Integer getDepth() {
+		return depth;
+	}
+	
 	@Override
 	public String toString() {
 		return state.toString();
