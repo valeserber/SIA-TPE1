@@ -7,15 +7,17 @@ import gps.exception.NotAppliableException;
 import gps.model.GameState;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public abstract class GPSEngine {
 
 	protected List<GPSNode> open = new LinkedList<GPSNode>();
 
-	protected List<GPSNode> closed = new ArrayList<GPSNode>();
+	protected Set<GPSState> closed = new HashSet<GPSState>();
 
 	protected GPSProblem problem;
 
@@ -44,7 +46,7 @@ public abstract class GPSEngine {
 				failed = true;
 			} else {
 				GPSNode currentNode = open.get(0);
-				closed.add(currentNode);
+				closed.add(currentNode.getState());
 				open.remove(0);
 				if (isGoal(currentNode)) {
 					finished = true;
@@ -117,11 +119,9 @@ public abstract class GPSEngine {
 				return true;
 			}
 		}
-		for (GPSNode closedNode : closed) {
-			if (closedNode.getState().compare(state)
-					&& closedNode.getCost() <= cost) {
-				return true;
-			}
+		if (closed.contains(state)) {
+//			System.out.println("already here");
+			return true;
 		}
 		return false;
 	}

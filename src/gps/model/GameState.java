@@ -1,5 +1,7 @@
 package gps.model;
 
+import java.util.Arrays;
+
 import gps.api.GPSState;
 
 public class GameState implements GPSState {
@@ -119,6 +121,26 @@ public class GameState implements GPSState {
 		}
 		ret += "\n";
 		return ret;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		for (int i = 0; i < SIZE; i++) {
+			result = prime * result + Arrays.hashCode(board[i]);
+		}
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof GPSState)) {
+			return false;
+		}
+		
+		GPSState state = (GPSState) obj;
+		return compare(state);
 	}
 	
 }
