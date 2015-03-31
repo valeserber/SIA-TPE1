@@ -4,7 +4,12 @@ import gps.api.GPSRule;
 import gps.api.GPSState;
 import gps.exception.NotAppliableException;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class GameRule implements GPSRule {
+
+	// TODO 1: ¿Puedo encadenar blockRow con blockCol? Usar tests para probar
 
 	private int color;
 	private int row;
@@ -25,8 +30,8 @@ public class GameRule implements GPSRule {
 
 	@Override
 	public String getName() {
-		return String.valueOf(color) + " (" + String.valueOf(row) + ", "
-				+ String.valueOf(col) + ")";
+		return String.valueOf(getColor()) + " (" + String.valueOf(getRow())
+				+ ", " + String.valueOf(getCol()) + ")";
 	}
 
 	@Override
@@ -35,26 +40,102 @@ public class GameRule implements GPSRule {
 			throw new IllegalArgumentException();
 		}
 		GameState gameState = (GameState) state;
-		if (isOcuppied(gameState) || isColorFull(gameState) ||
-				hasThreeAdjacentTiles(gameState) || filledRowOrCol(gameState) ||
-				containsSimilarities(gameState)){
+		isAppliable(gameState);
+		blockOtherTailInCol(gameState);
+		blockOtherTailInRow(gameState);
+		GameState updatedState = new GameState(gameState);
+		updatedState.addColor(getColor(), getRow(), getCol());
+		return updatedState;
+	}
+	
+	private void isAppliable(GameState gameState) throws NotAppliableException {
+		if (isOcuppied(gameState) || filledRowOrCol(gameState)
+				|| hasThreeAdjacentTiles(gameState) || isColorFull(gameState) || containsSimilarities(gameState)) {
 			throw new NotAppliableException();
 		}
-		GameState updatedState = new GameState(gameState);
-		updatedState.addColor(color, row, col);
-		return updatedState;
 	}
 
 	private boolean isOcuppied(GameState state) {
-		return state.getBoard()[row][col] != 0;
+		return state.getBoard()[getRow()][getCol()] != 0;
+	}
+
+	private void blockOtherTailInRow(GameState state)
+			throws NotAppliableException {
+		for (int i = 0; i < GameState.SIZE; i++) { // recorro la fila
+			GameRule r = getRedRulesForTile(getRow(), i); // genero las
+															// reglas de la
+															// fila
+			GameState newState = new GameState(state);
+			newState.addColor(getColor(), getRow(), getCol());// nuevo tablero
+																// con mi regla
+															// agregada
+			try {
+				r.isAppliable(newState);
+			} catch (NotAppliableException e) { // si no puedo poner una
+												// regla
+				if (newState.getBoard()[r.getRow()][r.getCol()] == 0) {
+					r = getPairRule(r);
+					try {
+						r.isAppliable(newState);
+					} catch (NotAppliableException e2) { // ni el otro color
+															// en el mismo
+															// lugar
+						throw new NotAppliableException();
+					}
+				}
+			}
+		}
+
+	}
+
+	private GameRule getPairRule(GameRule r) {
+		return new GameRule((r.getColor() == 1) ? 2 : 1, r.getRow(), r.getCol());
+	}
+
+	private int[][] copyBoard(int[][] board) {
+		int[][] newBoard = new int[GameState.SIZE][GameState.SIZE];
+		for (int i = 0; i < GameState.SIZE; i++) {
+			for (int j = 0; j < GameState.SIZE; j++) {
+				newBoard[i][j] = board[i][j];
+			}
+		}
+		return newBoard;
+	}
+
+	private void blockOtherTailInCol(GameState state)
+			throws NotAppliableException {
+		for (int i = 0; i < GameState.SIZE; i++) { // recorro la fila
+			GameRule r = getRedRulesForTile(i, getCol());
+			GameState newState = new GameState(state);
+			newState.addColor(getColor(), getRow(), getCol()); // nuevo tablero
+																// con mi regla
+																// agregada
+			try {
+				r.isAppliable(newState);
+			} catch (NotAppliableException e) { // si no puedo poner una regla
+				if (newState.getBoard()[r.getRow()][r.getCol()] == 0) {
+					r = getPairRule(r);
+					try {
+						r.isAppliable(newState);
+					} catch (NotAppliableException e2) { // ni el otro color en
+															// el mismo lugar
+						throw new NotAppliableException();
+					}
+				}
+			}
+		}
+	}
+
+	private GameRule getRedRulesForTile(int r, int col) {
+		return new GameRule(GameState.RED, r, col);
 	}
 
 	private boolean isColorFull(GameState state) {
 		int maxColorCount = state.getSize() * state.getSize() / 2;
-		if (this.color == GameState.BLUE) {
+		if (this.getColor() == GameState.BLUE) {
 			return (state.getBlueCount() + 1) > maxColorCount;
 		}
-		if (this.color == GameState.RED) {
+		if (this.getColor() == GameState.RED) {
 			return (state.getRedCount() + 1) > maxColorCount;
 		}
 		throw new IllegalArgumentException();
@@ -64,8 +145,8 @@ public class GameRule implements GPSRule {
 		int[][] board = state.getBoard();
 		int top = 0;
 		for (int i = 1; i < 3; i++) {
-			if (row - i >= 0) {
-				if (board[row - i][col] == color) {
+			if (getRow() - i >= 0) {
+				if (board[getRow() - i][getCol()] == getColor()) {
 					top++;
 				}
 			}
@@ -74,8 +155,8 @@ public class GameRule implements GPSRule {
 			return true;
 		int bottom = 0;
 		for (int i = 1; i < 3; i++) {
-			if (row + i < state.getSize()) {
-				if (board[row + i][col] == color) {
+			if (getRow() + i < state.getSize()) {
+				if (board[getRow() + i][getCol()] == getColor()) {
 					bottom++;
 				}
 			}
@@ -84,8 +165,8 @@ public class GameRule implements GPSRule {
 			return true;
 		int right = 0;
 		for (int i = 1; i < 3; i++) {
-			if (col + i < state.getSize()) {
-				if (board[row][col + i] == color) {
+			if (getCol() + i < state.getSize()) {
+				if (board[getRow()][getCol() + i] == getColor()) {
 					right++;
 				}
 			}
@@ -94,8 +175,8 @@ public class GameRule implements GPSRule {
 			return true;
 		int left = 0;
 		for (int i = 1; i < 3; i++) {
-			if (col - 1 >= 0) {
-				if (board[row][col - 1] == color) {
+			if (getCol() - i >= 0) {
+				if (board[getRow()][getCol() - i] == getColor()) {
 					left++;
 				}
 			}
@@ -103,14 +184,16 @@ public class GameRule implements GPSRule {
 		if (left == 2)
 			return true;
 		// row
-		if (row - 1 >= 0 && row + 1 < state.getSize()) {
-			if (board[row - 1][col] == color && board[row + 1][col] == color) {
+		if (getRow() - 1 >= 0 && getRow() + 1 < state.getSize()) {
+			if (board[getRow() - 1][getCol()] == getColor()
+					&& board[getRow() + 1][getCol()] == getColor()) {
 				return true;
 			}
 		}
 		// col
-		if (col - 1 >= 0 && col + 1 < state.getSize()) {
-			if (board[row][col - 1] == color && board[row][col + 1] == color) {
+		if (getCol() - 1 >= 0 && getCol() + 1 < state.getSize()) {
+			if (board[getRow()][getCol() - 1] == getColor()
+					&& board[getRow()][getCol() + 1] == getColor()) {
 				return true;
 			}
 		}
@@ -135,12 +218,11 @@ public class GameRule implements GPSRule {
 		}
 		if (count > state.getSize() / 2 - 1)
 			return true;
-		// If everything i ok
+		// If everything is ok
 		return false;
 	}
-	
-	/// new code
-	
+
+	// check if new rule makes two rows or cols similar.	
 	private boolean containsSimilarities(GameState state) {
 		if (fillingRow(state, row)) {
 			int[] newRow = copyRow(state, row);
@@ -217,6 +299,18 @@ public class GameRule implements GPSRule {
 		}
 
 		return true;
+	}
+
+	public int getColor() {
+		return color;
+	}
+
+	public int getRow() {
+		return row;
+	}
+
+	public int getCol() {
+		return col;
 	}
 
 }

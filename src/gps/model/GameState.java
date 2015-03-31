@@ -1,5 +1,7 @@
 package gps.model;
 
+import java.util.Arrays;
+
 import gps.api.GPSState;
 
 public class GameState implements GPSState {
@@ -34,6 +36,8 @@ public class GameState implements GPSState {
 				this.board[i][j] = gameState.getBoard()[i][j];
 			}
 		}
+		this.red=gameState.red;
+		this.blue=gameState.blue;
 	}
 
 	public int getRedCount() {
@@ -42,6 +46,14 @@ public class GameState implements GPSState {
 
 	public int getBlueCount() {
 		return this.blue;
+	}
+	
+	public int getColoredCount(){
+		return this.blue+this.red;
+	}
+	
+	public int getEmptyCount() {
+		return (size*size) - getColoredCount();
 	}
 
 	public int getSize() {
@@ -86,6 +98,53 @@ public class GameState implements GPSState {
 	
 	public void addColor(int color, int row, int col) {
 		this.board[row][col] = color;
+		if(color==RED){
+			red++;
+		}else{
+			blue++;
+		}
 	}
 
+	public void printBoard(){
+		for(int i=0;i<SIZE;i++){
+			for(int j=0;j<SIZE;j++){
+				System.out.print(board[i][j]);
+			}
+			System.out.println("");
+		}
+		System.out.println("\n");
+	}
+	
+	public String toString() {
+		String ret = "";
+		for(int i=0;i<SIZE;i++){
+			for(int j=0;j<SIZE;j++){
+				ret += board[i][j];
+			}
+			ret += "\n";
+		}
+		ret += "\n";
+		return ret;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		for (int i = 0; i < SIZE; i++) {
+			result = prime * result + Arrays.hashCode(board[i]);
+		}
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof GPSState)) {
+			return false;
+		}
+		
+		GPSState state = (GPSState) obj;
+		return compare(state);
+	}
+	
 }

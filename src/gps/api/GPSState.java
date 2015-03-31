@@ -14,4 +14,7 @@ public interface GPSState {
 	 */
 	boolean compare(GPSState state);
 	
+	public boolean equals(Object obj);
+	
+	public int hashCode();
 }
