@@ -186,7 +186,7 @@ public class GameProblem implements GPSProblem {
 		}
 
 		int ret = 1000*maxTiles
-				- 100*gameState.getColoredCount() + 5*doubleCount - 3*doubleCountDone 
+				+ 5*doubleCount - 1*doubleCountDone 
 				- 15*fullRow - 15*fullCol;
 //		System.out.println("---- " + ret);
 //		System.out.println(100*maxTiles);
