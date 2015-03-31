@@ -30,8 +30,8 @@ public class UserInterface {
 
 			String input, inputAlgorithm, level;
 			Integer n = null;
-			Heuristic heuristic=Heuristic.USEFULSTATE;
-			SearchStrategy strategy=SearchStrategy.AStar;
+			Heuristic heuristic = Heuristic.COLUMNS;
+			SearchStrategy strategy = SearchStrategy.AStar;
 
 			while (notEntered && (inputAlgorithm = br.readLine()) != null) {
 				System.out.println("You select Algorithm: " + inputAlgorithm);
