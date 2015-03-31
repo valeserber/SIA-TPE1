@@ -45,11 +45,11 @@ public abstract class GPSEngine {
 			} else {
 				GPSNode currentNode = open.get(0);
 				closed.add(currentNode.getState());
-				if (closed.size() % 10000 == 0) {
+				if (closed.size() % 5000 == 0) {
 					System.out.println("closed " + closed.size());
 				}
-//				if (((GameState) currentNode.getState()).getColoredCount() < 50)
-//					System.out.println("--" + i + "--" + ((GameState) currentNode.getState()).getColoredCount() + " -- " + j++);
+				if (((GameState) currentNode.getState()).getColoredCount() < 37)
+				System.out.println("--" + i + "--" + ((GameState) currentNode.getState()).getColoredCount()); // + " -- " + j++);
 //				System.out.println("row: " + (1 + ((GameState) currentNode.getState()).row));
 //				System.out.println("col: " + (1 + ((GameState) currentNode.getState()).col));
 //				System.out.println(((GameState) currentNode.getState()));

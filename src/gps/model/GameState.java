@@ -16,6 +16,8 @@ public class GameState implements GPSState {
 	private int size;
 	private int[][] board;
 	private int hValue = -1;
+	public int row;
+	public int col;
 
 	public GameState(int size) {
 		this.size = size;

@@ -45,6 +45,8 @@ public class GameRule implements GPSRule {
 		blockOtherTailInRow(gameState);
 		GameState updatedState = new GameState(gameState);
 		updatedState.addColor(getColor(), getRow(), getCol());
+		updatedState.col = this.col;
+		updatedState.row = this.row;
 		return updatedState;
 	}
 
