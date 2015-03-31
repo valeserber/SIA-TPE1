@@ -113,28 +113,9 @@ public class GameProblem implements GPSProblem {
 	private Integer getHValueSurface(GameState gameState) {
 		
 		//check if the state is impossible to use
-		if (!stateOk(gameState)) {
-			return 1000;
-		}
 		
 		return 0;
 		
-	}
-	
-	private boolean stateOk(GameState gameState) {
-		//check if the state is impossible to use
-		GameState tmpState = new GameState(gameState);
-		GameRule nextMove;
-		nextMove = retDoubleFree(tmpState);
-		while (nextMove != null) {
-			try {
-				tmpState = (GameState) nextMove.evalRule(tmpState);
-			} catch (NotAppliableException e) {
-				return false;
-			}
-			nextMove = retDoubleFree(tmpState);
-		}
-		return true;
 	}
 
 	private Integer getHValueUsefulState(GameState gameState) {
@@ -149,10 +130,6 @@ public class GameProblem implements GPSProblem {
 //		int sameRow = 0;
 		int[][] board = gameState.getBoard();
 		int maxTiles = (GameState.SIZE * GameState.SIZE);
-		
-		if (!stateOk(gameState)) {
-			return 100000;
-		}
 		
 		for (int r = 0; r < GameState.SIZE; r++) {
 			int freeTiles = 0;
@@ -285,48 +262,6 @@ public class GameProblem implements GPSProblem {
 
 		return doubleCount;
 
-	}
-	
-	private GameRule retDoubleFree(GameState gameState) {
-		GameRule ret = null;
-		
-		for (int r = 0; r < gameState.getSize(); r++) {
-			for (int c = 0; c < gameState.getSize(); c++) {
-				if (gameState.getBoard()[r][c] != gameState.EMPTY) {
-					ret = doubleFree(gameState, r, c);
-				}
-				if (ret != null) {
-					return ret;
-				}
-			}
-		}
-		return ret;
-	}
-	
-	private GameRule doubleFree(GameState gameState, int row, int col) {
-		int[][] board = gameState.getBoard();
-		int actualTile = board[row][col];
-		GameRule rule = null;
-		if (row + 1 < GameState.SIZE && actualTile == board[row + 1][col]) {
-			if (row + 2 < GameState.SIZE && board[row + 2][col] == GameState.EMPTY) {
-				rule = new GameRule((actualTile == 1 ? 2 : 1), row + 2, col);
-			} else if ((row - 1 >= 0 && board[row - 1][col] == GameState.EMPTY)) {
-				rule = new GameRule((actualTile == 1 ? 2 : 1), row - 1, col);
-			}
-		} else if (col + 1 < GameState.SIZE && actualTile == board[row][col + 1]) {
-			if ((col + 2 < GameState.SIZE && board[row][col + 2] == GameState.EMPTY)) {
-				rule = new GameRule((actualTile == 1 ? 2 : 1), row, col + 2);
-			} else if ((col - 1 >= 0 && board[row][col - 1] == GameState.EMPTY)) {
-				rule = new GameRule((actualTile == 1 ? 2 : 1), row, col - 1);
-			}
-		} else if(row + 2 < GameState.SIZE && actualTile == board[row + 2][col] && 
-				GameState.EMPTY == board[row + 1][col]) {
-			rule = new GameRule((actualTile == 1 ? 2 : 1), row + 1, col);
-		} else if (col + 2 < GameState.SIZE && actualTile == board[row][col + 2] && 
-				GameState.EMPTY == board[row][col + 1]) {
-			rule = new GameRule((actualTile == 1 ? 2 : 1), row, col + 1);
-		}
-		return rule;
 	}
 	
 	public int checkDoubleColorDone(GameState gameState, int row, int col,

@@ -45,6 +45,7 @@ public class GameRule implements GPSRule {
 		blockOtherTailInRow(gameState);
 		GameState updatedState = new GameState(gameState);
 		updatedState.addColor(getColor(), getRow(), getCol());
+		stateOk(updatedState);
 		updatedState.col = this.col;
 		updatedState.row = this.row;
 		return updatedState;
@@ -301,6 +302,64 @@ public class GameRule implements GPSRule {
 		}
 
 		return true;
+	}
+	
+	private void stateOk(GameState gameState) throws NotAppliableException {
+		//check if the state is impossible to use
+		GameState tmpState = new GameState(gameState);
+		GameRule nextMove;
+		nextMove = retDoubleFree(tmpState);
+		while (nextMove != null) {
+			nextMove.isAppliable(tmpState);
+			nextMove.blockOtherTailInCol(tmpState);
+			nextMove.blockOtherTailInRow(tmpState);
+			
+			tmpState.addColor(nextMove.getColor(), nextMove.getRow(), nextMove.getCol());
+			
+			nextMove = retDoubleFree(tmpState);
+		}
+	}
+	
+	private GameRule retDoubleFree(GameState gameState) {
+		GameRule ret = null;
+		
+		for (int r = 0; r < gameState.getSize(); r++) {
+			for (int c = 0; c < gameState.getSize(); c++) {
+				if (gameState.getBoard()[r][c] != gameState.EMPTY) {
+					ret = doubleFree(gameState, r, c);
+				}
+				if (ret != null) {
+					return ret;
+				}
+			}
+		}
+		return ret;
+	}
+	
+	private GameRule doubleFree(GameState gameState, int row, int col) {
+		int[][] board = gameState.getBoard();
+		int actualTile = board[row][col];
+		GameRule rule = null;
+		if (row + 1 < GameState.SIZE && actualTile == board[row + 1][col]) {
+			if (row + 2 < GameState.SIZE && board[row + 2][col] == GameState.EMPTY) {
+				rule = new GameRule((actualTile == 1 ? 2 : 1), row + 2, col);
+			} else if ((row - 1 >= 0 && board[row - 1][col] == GameState.EMPTY)) {
+				rule = new GameRule((actualTile == 1 ? 2 : 1), row - 1, col);
+			}
+		} else if (col + 1 < GameState.SIZE && actualTile == board[row][col + 1]) {
+			if ((col + 2 < GameState.SIZE && board[row][col + 2] == GameState.EMPTY)) {
+				rule = new GameRule((actualTile == 1 ? 2 : 1), row, col + 2);
+			} else if ((col - 1 >= 0 && board[row][col - 1] == GameState.EMPTY)) {
+				rule = new GameRule((actualTile == 1 ? 2 : 1), row, col - 1);
+			}
+		} else if(row + 2 < GameState.SIZE && actualTile == board[row + 2][col] && 
+				GameState.EMPTY == board[row + 1][col]) {
+			rule = new GameRule((actualTile == 1 ? 2 : 1), row + 1, col);
+		} else if (col + 2 < GameState.SIZE && actualTile == board[row][col + 2] && 
+				GameState.EMPTY == board[row][col + 1]) {
+			rule = new GameRule((actualTile == 1 ? 2 : 1), row, col + 1);
+		}
+		return rule;
 	}
 
 	public int getColor() {
