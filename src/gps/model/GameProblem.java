@@ -15,8 +15,10 @@ public class GameProblem implements GPSProblem {
 	
 	private int[][] initialBoard;
 	private LinkedList<GPSRule> rules;
+	private Integer currentLevel;
 	
 	public GameProblem(Integer boardLevel) {
+		currentLevel = boardLevel;
 		initialBoard = Board.getInitialBard(boardLevel);
 		rules = new LinkedList<GPSRule>();
 		int[][] initialBoard = ((GameState) getInitState()).getBoard();
@@ -31,6 +33,11 @@ public class GameProblem implements GPSProblem {
 			}
 		}
 		Collections.shuffle(rules);
+	}
+	
+	@Override
+	public Integer getCurrentLevel() {
+		return currentLevel;
 	}
 	
 	@Override
@@ -58,20 +65,6 @@ public class GameProblem implements GPSProblem {
 //		System.out.println("Lugares vacios: "+count);
 	}
 
-	// private boolean hasNearColoredTiles(int i, int j) {
-	// int[][] board = ((GameState) getInitState()).getBoard();
-	// if (i - 1 >= 0 && board[i - 1][j] != 0) {
-	// return true;
-	// } else if (i + 1 < GameState.SIZE && board[i + 1][j] != 0) {
-	// return true;
-	// } else if (j - 1 > 0 && board[i][j - 1] != 0) {
-	// return true;
-	// } else if (j + 1 < GameState.SIZE && board[i][j + 1] != 0) {
-	// return true;
-	// }
-	// return false;
-	// }
-
 	@Override
 	public Integer getHValue(GPSState state, Heuristic heuristic) {
 		if (!(state instanceof GameState)) {
@@ -87,12 +80,67 @@ public class GameProblem implements GPSProblem {
 			return getHValueMinColor(gameState);
 		case USEFULSTATE:
 			return getHValueUsefulState(gameState);
+		case FULLCOLOR:
+			return getHValueFullColor(gameState);
+		case ADJACENTS:
+			return getHValueAdjacents(gameState);
 		default:
 			throw new IllegalArgumentException();
 		}
 
 	}
+	
+	private Integer getHValueAdjacents(GameState gameState) {
+		int empty = gameState.getEmptyCount();
+		int[][] board = gameState.getBoard();
+		int adjacents = 0;
+		for (int i=0; i< gameState.SIZE; i++) {
+			for (int j=0; j<gameState.SIZE; j++) {
+				if ((i > 0) && sameColor(board, i-1, j ,i, j)) { //top
+					adjacents++;
+				}
+				if ((i < gameState.SIZE - 1) && sameColor(board, i+1, j, i, j)) { //bottom
+					adjacents++;
+				}
+				if ((j > 0) && sameColor(board, i, j-1, i, j)) { //left
+					adjacents++;
+				}
+				if ((j < gameState.SIZE - 1) && sameColor(board, i, j+1, i, j)) { //right
+					adjacents++;
+				}
+			}
+		}
+		int ans = empty - (adjacents/2);
+		return (ans < 0)? 0 : ans;
+	}
+	
+	private boolean sameColor(int[][]board, int row1, int col1, int row2, int col2) {
+		return board[row1][col1] == board[row2][col2];
+	}
 
+	private Integer getHValueFullColor(GameState gameState) {
+		int rows = 0;
+		int blue = 0;
+		int red = 0;
+		int cant = GameState.SIZE /2 ;
+		for (int i=0; i< gameState.getSize(); i++) {
+			blue = 0;
+			red = 0;
+			for (int j=0; j<gameState.getSize(); j++) {
+				int color = gameState.getBoard()[i][j];
+				if (color == GameState.BLUE) {
+					blue++;
+				} else if (color == GameState.RED) {
+					red++;
+				}
+			}
+			if (blue == cant || red == cant) {
+				rows++;
+			}
+		}
+		return (GameState.SIZE - rows);
+	}
+	
 	private Integer getHValueUsefulState(GameState gameState) {
 		int blue = 0;
 		int red = 0;
