@@ -99,12 +99,42 @@ public class GameProblem implements GPSProblem {
 		case USEFULSTATE:
 			hValue = getHValueUsefulState(gameState);
 			break;
+		case SURFACE:
+			hValue = getHValueSurface(gameState);
+			break;
 		default:
 			throw new IllegalArgumentException();
 		}
 		gameState.setHValue(hValue);
 		return hValue;
 
+	}
+	
+	private Integer getHValueSurface(GameState gameState) {
+		
+		//check if the state is impossible to use
+		if (!stateOk(gameState)) {
+			return 1000;
+		}
+		
+		return 0;
+		
+	}
+	
+	private boolean stateOk(GameState gameState) {
+		//check if the state is impossible to use
+		GameState tmpState = new GameState(gameState);
+		GameRule nextMove;
+		nextMove = retDoubleFree(tmpState);
+		while (nextMove != null) {
+			try {
+				tmpState = (GameState) nextMove.evalRule(tmpState);
+			} catch (NotAppliableException e) {
+				return false;
+			}
+			nextMove = retDoubleFree(tmpState);
+		}
+		return true;
 	}
 
 	private Integer getHValueUsefulState(GameState gameState) {
@@ -119,6 +149,11 @@ public class GameProblem implements GPSProblem {
 //		int sameRow = 0;
 		int[][] board = gameState.getBoard();
 		int maxTiles = (GameState.SIZE * GameState.SIZE);
+		
+		if (!stateOk(gameState)) {
+			return 100000;
+		}
+		
 		for (int r = 0; r < GameState.SIZE; r++) {
 			int freeTiles = 0;
 			red = 0;
@@ -185,7 +220,7 @@ public class GameProblem implements GPSProblem {
 			}
 		}
 
-		int ret = 1000*maxTiles
+		int ret = 10*maxTiles
 				+ 5*doubleCount - 1*doubleCountDone 
 				- 15*fullRow - 15*fullCol;
 //		System.out.println("---- " + ret);
@@ -197,8 +232,8 @@ public class GameProblem implements GPSProblem {
 //		System.out.println(-colorFullCol);
 //		System.out.println(-colorFullRow);
 //		System.out.println(gameState);
-		if (ret < 0)
-			System.out.println(board[10][10]);
+		if (ret < 1 || ret > 100000)
+			System.out.println(ret);
 		return ret >= 0 ? ret : 0;
 	}
 
@@ -250,6 +285,48 @@ public class GameProblem implements GPSProblem {
 
 		return doubleCount;
 
+	}
+	
+	private GameRule retDoubleFree(GameState gameState) {
+		GameRule ret = null;
+		
+		for (int r = 0; r < gameState.getSize(); r++) {
+			for (int c = 0; c < gameState.getSize(); c++) {
+				if (gameState.getBoard()[r][c] != gameState.EMPTY) {
+					ret = doubleFree(gameState, r, c);
+				}
+				if (ret != null) {
+					return ret;
+				}
+			}
+		}
+		return ret;
+	}
+	
+	private GameRule doubleFree(GameState gameState, int row, int col) {
+		int[][] board = gameState.getBoard();
+		int actualTile = board[row][col];
+		GameRule rule = null;
+		if (row + 1 < GameState.SIZE && actualTile == board[row + 1][col]) {
+			if (row + 2 < GameState.SIZE && board[row + 2][col] == GameState.EMPTY) {
+				rule = new GameRule((actualTile == 1 ? 2 : 1), row + 2, col);
+			} else if ((row - 1 >= 0 && board[row - 1][col] == GameState.EMPTY)) {
+				rule = new GameRule((actualTile == 1 ? 2 : 1), row - 1, col);
+			}
+		} else if (col + 1 < GameState.SIZE && actualTile == board[row][col + 1]) {
+			if ((col + 2 < GameState.SIZE && board[row][col + 2] == GameState.EMPTY)) {
+				rule = new GameRule((actualTile == 1 ? 2 : 1), row, col + 2);
+			} else if ((col - 1 >= 0 && board[row][col - 1] == GameState.EMPTY)) {
+				rule = new GameRule((actualTile == 1 ? 2 : 1), row, col - 1);
+			}
+		} else if(row + 2 < GameState.SIZE && actualTile == board[row + 2][col] && 
+				GameState.EMPTY == board[row + 1][col]) {
+			rule = new GameRule((actualTile == 1 ? 2 : 1), row + 1, col);
+		} else if (col + 2 < GameState.SIZE && actualTile == board[row][col + 2] && 
+				GameState.EMPTY == board[row][col + 1]) {
+			rule = new GameRule((actualTile == 1 ? 2 : 1), row, col + 1);
+		}
+		return rule;
 	}
 	
 	public int checkDoubleColorDone(GameState gameState, int row, int col,

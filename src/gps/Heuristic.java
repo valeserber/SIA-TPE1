@@ -4,5 +4,6 @@ public enum Heuristic {
 	ROWS,
 	POSSIBILITIES,
 	MINCOLOR,
-	USEFULSTATE
+	USEFULSTATE,
+	SURFACE
 }
