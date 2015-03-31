@@ -43,16 +43,6 @@ public class Board {
 			{ 0, 2, 1, 0, 1, 1, 0, 0 },
 			{ 1, 1, 0, 0, 2, 0, 1, 2 } };
 	
-	private static int[][] levelFive = { 
-			{ 0, 0, 2, 0, 2, 0, 1, 0 },
-			{ 0, 1, 1, 0, 0, 2, 2, 0 }, 
-			{ 0, 1, 0, 0, 0, 2, 0, 1 },
-			{ 0, 0, 0, 2, 2, 0, 1, 0 }, 
-			{ 2, 0, 0, 2, 0, 0, 1, 1 },
-			{ 2, 0, 2, 0, 2, 0, 0, 1 }, 
-			{ 0, 2, 1, 0, 0, 1, 0, 0 },
-			{ 1, 1, 0, 0, 2, 0, 1, 2 } };
-	
 	public static int[][] getInitialBard(Integer boardLevel) {
 		switch(boardLevel) {
 		case 1:
@@ -63,8 +53,6 @@ public class Board {
 			return levelThree;
 		case 4:
 			return levelFour;
-		case 5:
-			return levelFive;
 		default:
 			throw new IllegalArgumentException();
 		}

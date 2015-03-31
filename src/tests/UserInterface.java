@@ -16,13 +16,13 @@ import java.io.InputStreamReader;
 
 public class UserInterface {
 	public static void main(String[] args) {
-		System.out.println("Select Heuristic\n");
-		System.out.println("1-Columns");
-		System.out.println("2-Possibilities");
-		System.out.println("3-Minimun Color");
-		System.out.println("4-Useful State");
-		System.out.println("5-Full Color");
-		System.out.println("6-Adjacents");
+		System.out.println("Select Algorithm\n");
+		System.out.println("A-BFS");
+		System.out.println("B-DFS");
+		System.out.println("C-IDDFS");
+		System.out.println("D-GREEDY");
+		System.out.println("E-A*");
+		
 		boolean notEntered = true;
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(
@@ -33,43 +33,6 @@ public class UserInterface {
 			Heuristic heuristic=Heuristic.USEFULSTATE;
 			SearchStrategy strategy=SearchStrategy.AStar;
 
-			while (notEntered && (input = br.readLine()) != null) {
-				System.out.println("You select:" + input + "\n");
-				switch (Integer.parseInt(input)) {
-				case 1:
-					heuristic = Heuristic.COLUMNS;
-					notEntered = false;
-					break;
-				case 2:
-					heuristic = Heuristic.POSSIBILITIES;
-					notEntered = false;
-					break;
-				case 3:
-					heuristic = Heuristic.MINCOLOR;
-					notEntered = false;
-					break;
-				case 4:
-					heuristic = Heuristic.USEFULSTATE;
-					notEntered = false;
-					break;
-				case 5:
-					heuristic = Heuristic.FULLCOLOR;
-					notEntered = false;
-					break;
-				case 6:
-					heuristic = Heuristic.ADJACENTS;
-					notEntered = false;
-				default:
-					System.out.println("Enter a number between 1 and 6");
-				}
-			}
-			notEntered = true;
-			System.out.println("Select Algotithm\n");
-			System.out.println("A-BFS");
-			System.out.println("B-DFS");
-			System.out.println("C-IDDFS");
-			System.out.println("D-GREEDY");
-			System.out.println("E-A*");
 			while (notEntered && (inputAlgorithm = br.readLine()) != null) {
 				System.out.println("You select Algorithm: " + inputAlgorithm);
 				switch (inputAlgorithm) {
@@ -98,18 +61,46 @@ public class UserInterface {
 				}
 			}
 			notEntered = true;
-			System.out.println("Select a Level from 1 to 5\n");
+			
+			if (strategy == SearchStrategy.AStar || strategy == SearchStrategy.GREEDY) {
+				System.out.println("Select Heuristic\n");
+				System.out.println("1-Columns");
+				System.out.println("2-Minimum Color");
+				System.out.println("3-Full Color");
+				while (notEntered && (input = br.readLine()) != null) {
+					System.out.println("You select:" + input + "\n");
+					switch (Integer.parseInt(input)) {
+					case 1:
+						heuristic = Heuristic.COLUMNS;
+						notEntered = false;
+						break;
+					case 2:
+						heuristic = Heuristic.MINCOLOR;
+						notEntered = false;
+						break;
+					case 3:
+						heuristic = Heuristic.FULLCOLOR;
+						notEntered = false;
+						break;
+					default:
+						System.out.println("Enter a number between 1 and 3");
+					}
+				}
+			}
+			notEntered = true;
+			System.out.println("Select a board from 1 to 4\n");
 			while (notEntered && (level = br.readLine()) != null) {
-				String s = level.substring(0, 1);
+				String s = "";
 				try {
+					s = level.substring(0, 1);
 					n = Integer.parseInt(s);
-					if (n < 1 || n > 5) {
-						System.out.println("Invalid level");
+					if (n < 1 || n > 4) {
+						System.out.println("Invalid board");
 					} else {
 						notEntered = false;
 					}
-				} catch (NumberFormatException e) {
-					System.out.println("Enter a number between 1 and 5");
+				} catch (Exception e) {
+					System.out.println("Enter a number between 1 and 4");
 				}
 			}
 			Run(strategy, heuristic, n);
