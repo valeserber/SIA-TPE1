@@ -41,18 +41,25 @@ public class GameRule implements GPSRule {
 		}
 		GameState gameState = (GameState) state;
 		isAppliable(gameState);
-		blockOtherTailInCol(gameState);
-		blockOtherTailInRow(gameState);
+//		blockOtherTailInRow(gameState);
 		GameState updatedState = new GameState(gameState);
 		updatedState.addColor(getColor(), getRow(), getCol());
 		return updatedState;
 	}
 	
 	private void isAppliable(GameState gameState) throws NotAppliableException {
-		if (isOcuppied(gameState) || filledRowOrCol(gameState)
-				|| hasThreeAdjacentTiles(gameState) || isColorFull(gameState) || containsSimilarities(gameState)) {
+		boolean a = isOcuppied(gameState);
+		boolean b = filledRowOrCol(gameState);
+		boolean c = hasThreeAdjacentTiles(gameState);
+		boolean d = isColorFull(gameState);
+		boolean e = containsSimilarities(gameState);
+		if (a || b || c || d || e){
 			throw new NotAppliableException();
 		}
+//		if (isOcuppied(gameState) || filledRowOrCol(gameState)
+//				|| hasThreeAdjacentTiles(gameState) || isColorFull(gameState) || containsSimilarities(gameState)) {
+//			throw new NotAppliableException();
+//		}
 	}
 
 	private boolean isOcuppied(GameState state) {

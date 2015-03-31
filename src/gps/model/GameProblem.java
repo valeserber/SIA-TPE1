@@ -87,12 +87,39 @@ public class GameProblem implements GPSProblem {
 			return getHValueMinColor(gameState);
 		case USEFULSTATE:
 			return getHValueUsefulState(gameState);
+		case FULLCOLOR:
+			return getHValueFullColor(gameState);
 		default:
 			throw new IllegalArgumentException();
 		}
 
 	}
 
+	private Integer getHValueFullColor(GameState gameState) {
+		int rows = 0;
+		int blue = 0;
+		int red = 0;
+		int cant = GameState.SIZE /2 ;
+		for (int i=0; i< gameState.getSize(); i++) {
+			blue = 0;
+			red = 0;
+			for (int j=0; j<gameState.getSize(); j++) {
+				int color = gameState.getBoard()[i][j];
+				if (color == GameState.BLUE) {
+					blue++;
+				} else if (color == GameState.RED) {
+					red++;
+				}
+			}
+			if (blue == cant || red == cant) {
+				rows++;
+			}
+		}
+//		gameState.printBoard();
+//		System.out.println("filas color completo: " + rows);
+		return (GameState.SIZE - rows + 1);
+	}
+	
 	private Integer getHValueUsefulState(GameState gameState) {
 		int blue = 0;
 		int red = 0;

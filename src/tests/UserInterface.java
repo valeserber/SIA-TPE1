@@ -21,6 +21,7 @@ public class UserInterface {
 		System.out.println("2-Possibilities");
 		System.out.println("3-Minimun Color");
 		System.out.println("4-Useful State");
+		System.out.println("5-Full Color");
 		boolean notEntered = true;
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(
@@ -50,8 +51,11 @@ public class UserInterface {
 					heuristic = Heuristic.USEFULSTATE;
 					notEntered = false;
 					break;
+				case 5:
+					heuristic = Heuristic.FULLCOLOR;
+					notEntered = false;
 				default:
-					System.out.println("Enter a number between 1 and 4");
+					System.out.println("Enter a number between 1 and 5");
 				}
 			}
 			notEntered = true;
