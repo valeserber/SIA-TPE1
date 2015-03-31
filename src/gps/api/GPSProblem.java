@@ -33,5 +33,7 @@ public interface GPSProblem {
 	 * @return The value of the Heuristic.
 	 */
 	Integer getHValue(GPSState state, Heuristic heuristic);
+	
+	public Integer getCurrentLevel();
 
 }

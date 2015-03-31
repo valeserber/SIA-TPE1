@@ -51,6 +51,10 @@ public class GameState implements GPSState {
 	public int getColoredCount(){
 		return this.blue+this.red;
 	}
+	
+	public int getEmptyCount() {
+		return (size*size) - getColoredCount();
+	}
 
 	public int getSize() {
 		return this.size;

@@ -51,6 +51,11 @@ public abstract class GPSEngine {
 				if (isGoal(currentNode)) {
 					finished = true;
 					System.out.println(currentNode.getSolution());
+					System.out.println("Strategy: " + strategy);
+					if (strategy == SearchStrategy.AStar || strategy == SearchStrategy.GREEDY) {
+						System.out.println("Heuristic: " + heuristic);
+					}
+					System.out.println("Board: " + problem.getCurrentLevel());
 					System.out.println("Expanded nodes: " + explosionCounter);
 					System.out.println("Depth: " + currentNode.getDepth());
 					System.out.println("Frontier nodes: " + open.size());
@@ -79,19 +84,14 @@ public abstract class GPSEngine {
 	}
 
 	protected  boolean explode(GPSNode node) throws InterruptedException {
-//		((GameState)node.getState()).	Board();
-		if(problem.getRules() == null){
+		List<GPSRule> rules = problem.getRules();
+		if(rules == null){
 			System.err.println("No rules!");
 			return false;
 		}
-		List<GPSRule> rules = problem.getRules();
-//		for (GPSRule r: rules) {
-//			System.out.println(r.getName());
-//		}
 		for (GPSRule rule : rules) {
 			GPSState newState = null;
 			try {
-//				System.out.println("rule applied: " + rule.getName());
 				newState = rule.evalRule(node.getState());
 			} catch (NotAppliableException e) {
 				// Do nothing
@@ -100,14 +100,10 @@ public abstract class GPSEngine {
 					&& !checkBranch(node, newState)
 					&& !checkOpenAndClosed(node.getCost() + rule.getCost(),
 							newState)) {
-//				((GameState) newState).printBoard();
 				GPSNode newNode = new GPSNode(newState, node.getCost()
 						+ rule.getCost(), node.getDepth() + 1);
 				newNode.setParent(node);
 				addNode(newNode);
-//				System.out.println("nodos en open: " + open.size());
-//				int seconds = (int)(System.currentTimeMillis() /1000);
-//				System.out.println("tiempo: " + seconds + "sg");
 			}
 		}
 		return true;
